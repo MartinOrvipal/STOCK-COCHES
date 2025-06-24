@@ -2,24 +2,27 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta name="color-scheme" content="light only">
   <title>Mapa de Stock de Coches</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
+    html, body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
+      background-color: white !important;
+      color-scheme: light only;
     }
 
     #map { height: 100vh; width: 100%; }
 
     .popup-content {
-      font-size: 11px;
-      line-height: 1.2;
-      max-width: 200px;
+      font-size: 10px;
+      line-height: 1.1;
+      max-width: 140px;
       border-radius: 4px;
-      padding: 4px;
+      padding: 2px 4px;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
       color: white;
     }
@@ -47,8 +50,8 @@
     }
 
     .marca-logo img {
-      width: 20px;
-      height: 20px;
+      width: 16px;
+      height: 16px;
       margin-right: 4px;
     }
 
@@ -64,7 +67,7 @@
     .bg-madrid      { background-color: #f1c232; }
     .bg-vigo        { background-color: #cc0000; }
     .bg-default     { background-color: #999999; }
-    .bg-madrid-1 { background-color: #ff6d01; }
+    .bg-madrid-1    { background-color: #ff6d01; }
 
     #camion-container {
       position: absolute;
@@ -163,7 +166,7 @@
             permanent: true,
             direction: "top",
             className: "",
-            offset: [0, -10],
+            offset: [0, -6],
             opacity: 1
           })
           .setLatLng([lat, lon])
@@ -173,7 +176,6 @@
       });
     });
 
-  // === CAMIONES PERSONALIZADOS ===
   const CAMIONES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRo1GdeHBhvINfcrAmPKvUmgU2jAIThFYNSg_TjOd3w-MyKe3gmzxEft6wz6-CN3WSsTpEgq1TabODC/pub?gid=614991280&single=true&output=csv';
 
   fetch(CAMIONES_CSV)
@@ -188,7 +190,6 @@
         const provinciaOriginal = camion.PROVINCIA;
         let nombreArchivo = provinciaOriginal.toLowerCase();
 
-        // 🎯 Corrige específicamente el nombre de archivo para "VALL. / PAL."
         if (nombreArchivo.includes('vall')) {
           nombreArchivo = 'val-pal';
         } else {
@@ -209,9 +210,7 @@
       });
     });
 
-  // Recarga automática cada 5 minutos
   setTimeout(() => location.reload(), 300000);
 </script>
 </body>
 </html>
-
