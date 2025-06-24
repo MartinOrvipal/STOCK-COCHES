@@ -10,8 +10,8 @@
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: white;
-      color: black;
+      background: white !important;
+      color: black !important;
     }
 
     #map { height: 100vh; width: 100%; }
@@ -87,6 +87,7 @@
       padding: 8px 14px;
       font-size: 15px;
       box-shadow: 0 1px 6px rgba(0,0,0,0.15);
+      color: black;
     }
 
     .camion-icon {
@@ -105,22 +106,32 @@
       font-weight: 500;
     }
 
+    /* Detecta TV Bro o pantallas pequeñas */
     @media screen and (max-width: 1024px) {
       .popup-content {
-        font-size: 9px;
-        padding: 2px;
+        font-size: 7px !important;
+        line-height: 1.1 !important;
+        max-width: 140px !important;
+        padding: 2px !important;
       }
+
       .marca-logo img {
-        width: 16px;
-        height: 16px;
+        width: 14px !important;
+        height: 14px !important;
+        margin-right: 2px !important;
       }
+
       .camion-card {
-        font-size: 13px;
-        padding: 6px 10px;
+        font-size: 11px !important;
+        padding: 6px 10px !important;
       }
-      .camion-icon {
-        width: 22px;
-        height: 22px;
+
+      .provincia {
+        font-size: 13px !important;
+      }
+
+      .cantidad {
+        font-size: 11px !important;
       }
     }
   </style>
@@ -194,6 +205,7 @@
       });
     });
 
+  // === CAMIONES PERSONALIZADOS ===
   const CAMIONES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRo1GdeHBhvINfcrAmPKvUmgU2jAIThFYNSg_TjOd3w-MyKe3gmzxEft6wz6-CN3WSsTpEgq1TabODC/pub?gid=614991280&single=true&output=csv';
 
   fetch(CAMIONES_CSV)
@@ -232,4 +244,3 @@
 </script>
 </body>
 </html>
-
