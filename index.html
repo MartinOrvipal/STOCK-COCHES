@@ -107,46 +107,45 @@
       font-weight: 500;
     }
 
-    /* Versión extrema para TV Bro */
+    /* Estilos ultra compactos solo para TV Bro */
     .tvbro .popup-content {
-      font-size: 4px !important;
-      max-width: 85px !important;
-      padding: 1px 1px !important;
-      line-height: 1.05 !important;
+      font-size: 3.5px !important;
+      max-width: 80px !important;
+      padding: 1px 1.5px !important;
+      line-height: 1 !important;
     }
 
     .tvbro .marca-logo img {
-      width: 7px !important;
-      height: 7px !important;
+      width: 6.5px !important;
+      height: 6.5px !important;
       margin-right: 1px !important;
     }
 
     .tvbro .camion-card {
-      font-size: 7px !important;
+      font-size: 6.5px !important;
       padding: 2px 5px !important;
       gap: 4px !important;
     }
 
     .tvbro .provincia,
     .tvbro .cantidad {
-      font-size: 7px !important;
+      font-size: 6.5px !important;
     }
   </style>
 </head>
 <body>
 <div id="map"></div>
 <div id="camion-container"></div>
+
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
+  const isTVBro = navigator.userAgent.toLowerCase().includes("tv bro");
+  if (isTVBro) document.body.classList.add("tvbro");
+
   const mapa = L.map('map', {
     zoomControl: true,
     attributionControl: false
   });
-
-  const isTVBro = navigator.userAgent.toLowerCase().includes("tv bro");
-  if (isTVBro) {
-    document.body.classList.add("tvbro");
-  }
 
   const bounds = isTVBro ? L.latLngBounds([34.5, -14], [52, 17]) : L.latLngBounds([35.5, -10], [49.5, 10]);
   mapa.fitBounds(bounds);
