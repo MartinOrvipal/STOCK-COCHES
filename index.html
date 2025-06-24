@@ -14,6 +14,13 @@
       color: black !important;
     }
 
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: white !important;
+        color: black !important;
+      }
+    }
+
     #map { height: 100vh; width: 100%; }
 
     .popup-content {
@@ -106,49 +113,47 @@
       font-weight: 500;
     }
 
-    /* Detecta TV Bro o pantallas pequeñas */
-    @media screen and (max-width: 1024px) {
-      .popup-content {
-        font-size: 7px !important;
-        line-height: 1.1 !important;
-        max-width: 140px !important;
-        padding: 2px !important;
-      }
+    .tvbro .popup-content {
+      font-size: 6.5px !important;
+      max-width: 110px !important;
+      padding: 2px 3px !important;
+    }
 
-      .marca-logo img {
-        width: 14px !important;
-        height: 14px !important;
-        margin-right: 2px !important;
-      }
+    .tvbro .marca-logo img {
+      width: 12px !important;
+      height: 12px !important;
+    }
 
-      .camion-card {
-        font-size: 11px !important;
-        padding: 6px 10px !important;
-      }
+    .tvbro .camion-card {
+      font-size: 10px !important;
+      padding: 5px 8px !important;
+    }
 
-      .provincia {
-        font-size: 13px !important;
-      }
+    .tvbro .provincia {
+      font-size: 12px !important;
+    }
 
-      .cantidad {
-        font-size: 11px !important;
-      }
+    .tvbro .cantidad {
+      font-size: 10px !important;
     }
   </style>
 </head>
 <body>
-
 <div id="map"></div>
 <div id="camion-container"></div>
-
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
+  const isTVBro = navigator.userAgent.toLowerCase().includes("tv bro");
+  if (isTVBro) {
+    document.body.classList.add("tvbro");
+  }
+
   const mapa = L.map('map', {
     zoomControl: true,
     attributionControl: false
   });
 
-  const bounds = L.latLngBounds([35.5, -10], [49.5, 10]);
+  const bounds = isTVBro ? L.latLngBounds([35, -12], [51, 15]) : L.latLngBounds([35.5, -10], [49.5, 10]);
   mapa.fitBounds(bounds);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -205,7 +210,6 @@
       });
     });
 
-  // === CAMIONES PERSONALIZADOS ===
   const CAMIONES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRo1GdeHBhvINfcrAmPKvUmgU2jAIThFYNSg_TjOd3w-MyKe3gmzxEft6wz6-CN3WSsTpEgq1TabODC/pub?gid=614991280&single=true&output=csv';
 
   fetch(CAMIONES_CSV)
@@ -219,7 +223,6 @@
       camiones.forEach(camion => {
         const provinciaOriginal = camion.PROVINCIA;
         let nombreArchivo = provinciaOriginal.toLowerCase();
-
         if (nombreArchivo.includes('vall')) {
           nombreArchivo = 'val-pal';
         } else {
@@ -232,7 +235,7 @@
         const div = document.createElement("div");
         div.className = "camion-card";
         div.innerHTML = `
-          <img class="camion-icon" src="${icono}" alt="Camión ${provinciaOriginal}">
+          <img class="camion-icon" src="${icono}" alt="Camion ${provinciaOriginal}">
           <span class="provincia">${provinciaOriginal}</span>
           <span class="cantidad">: ${numCamiones}</span>
         `;
