@@ -108,31 +108,29 @@
     }
 
     /* Versión extrema para TV Bro */
-    @media screen and (max-width: 1024px) {
-      .tvbro .popup-content {
-  font-size: 4.2px !important;
-  max-width: 90px !important;
-  padding: 1px 2px !important;
-  line-height: 1.05 !important;
-}
+    .tvbro .popup-content {
+      font-size: 4px !important;
+      max-width: 85px !important;
+      padding: 1px 1px !important;
+      line-height: 1.05 !important;
+    }
 
-.tvbro .marca-logo img {
-  width: 8px !important;
-  height: 8px !important;
-  margin-right: 1px !important;
-}
+    .tvbro .marca-logo img {
+      width: 7px !important;
+      height: 7px !important;
+      margin-right: 1px !important;
+    }
 
-.tvbro .camion-card {
-  font-size: 8px !important;
-  padding: 3px 6px !important;
-  gap: 6px !important;
-}
+    .tvbro .camion-card {
+      font-size: 7px !important;
+      padding: 2px 5px !important;
+      gap: 4px !important;
+    }
 
-.tvbro .provincia,
-.tvbro .cantidad {
-  font-size: 8px !important;
-}
-
+    .tvbro .provincia,
+    .tvbro .cantidad {
+      font-size: 7px !important;
+    }
   </style>
 </head>
 <body>
@@ -146,6 +144,10 @@
   });
 
   const isTVBro = navigator.userAgent.toLowerCase().includes("tv bro");
+  if (isTVBro) {
+    document.body.classList.add("tvbro");
+  }
+
   const bounds = isTVBro ? L.latLngBounds([34.5, -14], [52, 17]) : L.latLngBounds([35.5, -10], [49.5, 10]);
   mapa.fitBounds(bounds);
 
