@@ -2,27 +2,24 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="color-scheme" content="light only">
   <title>Mapa de Stock de Coches</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    html, body {
+    body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background-color: white !important;
-      color-scheme: light only;
     }
 
     #map { height: 100vh; width: 100%; }
 
     .popup-content {
-      font-size: 10px;
-      line-height: 1.1;
-      max-width: 140px;
+      font-size: 13px;
+      line-height: 1.2;
+      max-width: 240px;
       border-radius: 4px;
-      padding: 2px 4px;
+      padding: 6px;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
       color: white;
     }
@@ -50,8 +47,8 @@
     }
 
     .marca-logo img {
-      width: 16px;
-      height: 16px;
+      width: 20px;
+      height: 20px;
       margin-right: 4px;
     }
 
@@ -66,8 +63,8 @@
     .bg-valencia    { background-color: #38761d; }
     .bg-madrid      { background-color: #f1c232; }
     .bg-vigo        { background-color: #cc0000; }
-    .bg-default     { background-color: #999999; }
     .bg-madrid-1    { background-color: #ff6d01; }
+    .bg-default     { background-color: #999999; }
 
     #camion-container {
       position: absolute;
@@ -104,6 +101,25 @@
     .cantidad {
       margin-left: auto;
       font-weight: 500;
+    }
+
+    /* Media query para TV Bro o pantallas pequeñas */
+    @media (max-width: 1024px) {
+      .popup-content {
+        font-size: 9px;
+        max-width: 160px;
+        padding: 3px;
+      }
+
+      .marca-logo img {
+        width: 16px;
+        height: 16px;
+      }
+
+      .stock,
+      .info-marca strong {
+        font-size: 10px;
+      }
     }
   </style>
 </head>
@@ -166,7 +182,7 @@
             permanent: true,
             direction: "top",
             className: "",
-            offset: [0, -6],
+            offset: [0, -10],
             opacity: 1
           })
           .setLatLng([lat, lon])
