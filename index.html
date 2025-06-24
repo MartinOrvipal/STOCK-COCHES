@@ -15,13 +15,6 @@
       color: black !important;
     }
 
-    @media (prefers-color-scheme: white) {
-      body {
-        background: white !important;
-        color: black !important;
-      }
-    }
-
     #map { height: 100vh; width: 100%; }
 
     .popup-content {
@@ -114,28 +107,29 @@
       font-weight: 500;
     }
 
-    .tvbro .popup-content {
-      font-size: 5.5px !important;
-      max-width: 110px !important;
-      padding: 2px 3px !important;
-    }
+    /* Versión extrema para TV Bro */
+    @media screen and (max-width: 1024px) {
+      .popup-content {
+        font-size: 5.5px !important;
+        line-height: 1.1 !important;
+        max-width: 100px !important;
+        padding: 2px 3px !important;
+      }
 
-    .tvbro .marca-logo img {
-      width: 10px !important;
-      height: 10px !important;
-    }
+      .marca-logo img {
+        width: 10px !important;
+        height: 10px !important;
+        margin-right: 2px !important;
+      }
 
-    .tvbro .camion-card {
-      font-size: 10px !important;
-      padding: 5px 8px !important;
-    }
+      .camion-card {
+        font-size: 9px !important;
+        padding: 4px 7px !important;
+      }
 
-    .tvbro .provincia {
-      font-size: 10px !important;
-    }
-
-    .tvbro .cantidad {
-      font-size: 10px !important;
+      .provincia, .cantidad {
+        font-size: 9px !important;
+      }
     }
   </style>
 </head>
@@ -144,17 +138,13 @@
 <div id="camion-container"></div>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-  const isTVBro = navigator.userAgent.toLowerCase().includes("tv bro");
-  if (isTVBro) {
-    document.body.classList.add("tvbro");
-  }
-
   const mapa = L.map('map', {
     zoomControl: true,
     attributionControl: false
   });
 
-  const bounds = isTVBro ? L.latLngBounds([35, -12], [51, 15]) : L.latLngBounds([35.5, -10], [49.5, 10]);
+  const isTVBro = navigator.userAgent.toLowerCase().includes("tv bro");
+  const bounds = isTVBro ? L.latLngBounds([34.5, -14], [52, 17]) : L.latLngBounds([35.5, -10], [49.5, 10]);
   mapa.fitBounds(bounds);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
