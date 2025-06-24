@@ -64,6 +64,7 @@
     .bg-madrid      { background-color: #f1c232; }
     .bg-vigo        { background-color: #cc0000; }
     .bg-default     { background-color: #999999; }
+    .bg-madrid-1 { background-color: #ff6d01; }
 
     #camion-container {
       position: absolute;
@@ -144,11 +145,11 @@
         else if (provincia === 'VALENCIA') bgClass = 'bg-valencia';
         else if (provincia === 'MADRID') bgClass = 'bg-madrid';
         else if (provincia === 'VIGO') bgClass = 'bg-vigo';
-        else if (provincia === 'MADRID/1') bgClass = ''; // color manual
+        else if (provincia === 'MADRID/1') bgClass = 'bg-madrid-1';
 
         if (!isNaN(lat) && !isNaN(lon)) {
           const html = `
-            <div class='popup-content ${bgClass}' style="${provincia === 'MADRID/1' ? 'background-color: #ff6d01;' : ''}">
+            <div class='popup-content ${bgClass}'>
               <div class='marca-logo'>
                 <div class="info-marca">
                   <img src="${logo}" alt="logo">
@@ -185,7 +186,15 @@
       const contenedor = document.getElementById("camion-container");
       camiones.forEach(camion => {
         const provinciaOriginal = camion.PROVINCIA;
-        const nombreArchivo = provinciaOriginal.toLowerCase().replace(/[\s./]+/g, "-");
+        let nombreArchivo = provinciaOriginal.toLowerCase();
+
+        // 🎯 Corrige específicamente el nombre de archivo para "VALL. / PAL."
+        if (nombreArchivo.includes('vall')) {
+          nombreArchivo = 'val-pal';
+        } else {
+          nombreArchivo = nombreArchivo.replace(/[\s./]+/g, "-");
+        }
+
         const icono = `assets/camion-${nombreArchivo}.png`;
         const numCamiones = camion['Nº CAMIONES'];
 
