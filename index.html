@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,125 +5,204 @@
   <title>Mapa de Stock de Coches</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
-    #map { height: 100vh; width: 100%; }
-    .popup-content {
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      line-height: 1.5;
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
     }
+
+    #map { height: 100vh; width: 100%; }
+
+    .popup-content {
+      font-size: 11px;
+      line-height: 1.2;
+      max-width: 200px;
+      border-radius: 4px;
+      padding: 4px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      color: white;
+    }
+
     .marca-logo {
       display: flex;
       align-items: center;
-      margin-top: 8px;
-      margin-bottom: 4px;
+      justify-content: space-between;
+      gap: 6px;
     }
+
+    .info-marca {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .stock {
+      flex-shrink: 0;
+      font-weight: bold;
+    }
+
     .marca-logo img {
-      width: 24px;
-      height: 24px;
-      margin-right: 8px;
+      width: 20px;
+      height: 20px;
+      margin-right: 4px;
     }
-    .marca-separator {
-      border-top: 1px solid #ccc;
-      margin: 10px 0;
+
+    .leaflet-tooltip {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+    }
+
+    .bg-barcelona   { background-color: #3c78d8; }
+    .bg-valencia    { background-color: #38761d; }
+    .bg-madrid      { background-color: #f1c232; }
+    .bg-vigo        { background-color: #cc0000; }
+    .bg-default     { background-color: #999999; }
+
+    #camion-container {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1000;
+    }
+
+    .camion-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: white;
+      border-radius: 12px;
+      padding: 8px 14px;
+      font-size: 15px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.15);
+    }
+
+    .camion-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .provincia {
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .cantidad {
+      margin-left: auto;
+      font-weight: 500;
     }
   </style>
 </head>
 <body>
 
-<div id="search-container" style="position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:1000;background:white;padding:8px;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,0.2);">
-  <input id="search-input" type="text" placeholder="Buscar provincia..." style="padding:6px;width:250px;border-radius:4px;border:1px solid #ccc;">
-</div>
-
 <div id="map"></div>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js">
-// Buscar provincia al pulsar Enter
-document.getElementById("search-input").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    const buscada = this.value.trim().toUpperCase();
-    if (coordenadas[buscada]) {
-      mapa.setView(coordenadas[buscada], 8);
-      // Intentamos abrir el popup del marcador si existe
-      mapa.eachLayer(layer => {
-        if (layer.getLatLng && layer.getLatLng().lat === coordenadas[buscada][0] && layer.getLatLng().lng === coordenadas[buscada][1] && layer.getPopup) {
-          layer.openPopup();
-        }
-      });
-    } else {
-      alert("Provincia no encontrada.");
-    }
-  }
-});
+<!-- Contenedor de camiones -->
+<div id="camion-container"></div>
 
-</script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-const mapa = L.map('map').setView([48.8566, 2.3522], 5); // Centrado en Europa
-
-// OpenStreetMap estándar (con nombres en español según idioma del navegador)
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© OpenStreetMap contributors',
-  detectRetina: true
-}).addTo(mapa);
-
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRo1GdeHBhvINfcrAmPKvUmgU2jAIThFYNSg_TjOd3w-MyKe3gmzxEft6wz6-CN3WSsTpEgq1TabODC/pub?gid=0&single=true&output=csv';
-
-const coordenadas = {
-  "MADRID": [40.4168, -3.7038],
-  "LYON": [45.75, 4.85],
-  "BERLIN": [52.52, 13.405]
-};
-
-fetch(CSV_URL)
-  .then(response => response.text())
-  .then(csvText => {
-    const rows = csvText.trim().split('\n').map(row => row.split(','));
-    const headers = rows.shift();
-    const data = rows.map(row => Object.fromEntries(headers.map((h, i) => [h.trim(), row[i].trim()])));
-
-    const provincias = [...new Set(data.map(d => d.PROVINCIA.toUpperCase()))];
-
-    provincias.forEach((provincia) => {
-      const coords = coordenadas[provincia];
-      if (!coords) return;
-
-      const datosProvincia = data.filter(d => d.PROVINCIA.toUpperCase() === provincia);
-      let html = `<div class='popup-content'><strong>${provincia}</strong>`;
-      const marcas = [...new Set(datosProvincia.map(d => d.MARCA))];
-
-      marcas.forEach((marca) => {
-        const modelos = datosProvincia.filter(d => d.MARCA === marca);
-        html += `<div class='marca-separator'></div>`;
-        html += `<div class='marca-logo'><img src="${modelos[0]["LOGO"]}" alt="logo"> <strong>${marca}</strong></div><ul>`;
-        modelos.forEach(m => {
-          html += `<li>${m.MODELO} – ${m.STOCK} unidades</li>`;
-        });
-        html += `</ul>`;
-      });
-
-      html += `</div>`;
-      L.marker(coords).addTo(mapa).bindPopup(html);
-    });
+  const mapa = L.map('map', {
+    zoomControl: true,
+    attributionControl: false
   });
 
-// Buscar provincia al pulsar Enter
-document.getElementById("search-input").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    const buscada = this.value.trim().toUpperCase();
-    if (coordenadas[buscada]) {
-      mapa.setView(coordenadas[buscada], 8);
-      // Intentamos abrir el popup del marcador si existe
-      mapa.eachLayer(layer => {
-        if (layer.getLatLng && layer.getLatLng().lat === coordenadas[buscada][0] && layer.getLatLng().lng === coordenadas[buscada][1] && layer.getPopup) {
-          layer.openPopup();
+  const bounds = L.latLngBounds(
+    [35.5, -10],  // Suroeste
+    [49.5, 10]    // Noreste
+  );
+
+  mapa.fitBounds(bounds);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    detectRetina: true
+  }).addTo(mapa);
+
+  const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRo1GdeHBhvINfcrAmPKvUmgU2jAIThFYNSg_TjOd3w-MyKe3gmzxEft6wz6-CN3WSsTpEgq1TabODC/pub?gid=0&single=true&output=csv';
+
+  fetch(CSV_URL)
+    .then(response => response.text())
+    .then(csvText => {
+      const rows = csvText.trim().split('\n').map(row => row.split(','));
+      const headers = rows.shift().map(h => h.trim());
+      const data = rows.map(row => Object.fromEntries(headers.map((h, i) => [h, row[i]?.trim() || ""])));
+
+      data.forEach(fila => {
+        const provincia = fila.PROVINCIA?.toUpperCase();
+        const marca = fila.MARCA;
+        const stock = fila.STOCK;
+        const logo = fila.LOGO;
+        const lat = parseFloat(fila.LATITUD.replace(",", "."));
+        const lon = parseFloat(fila.LONGITUD.replace(",", "."));
+
+        let bgClass = 'bg-default';
+        if (provincia === 'BARCELONA') bgClass = 'bg-barcelona';
+        else if (provincia === 'VALENCIA') bgClass = 'bg-valencia';
+        else if (provincia === 'MADRID') bgClass = 'bg-madrid';
+        else if (provincia === 'VIGO') bgClass = 'bg-vigo';
+
+        if (!isNaN(lat) && !isNaN(lon)) {
+          const html = `
+            <div class='popup-content ${bgClass}'>
+              <div class='marca-logo'>
+                <div class="info-marca">
+                  <img src="${logo}" alt="logo">
+                  <strong>${marca}</strong>
+                </div>
+                <div class="stock">${stock}</div>
+              </div>
+            </div>`;
+
+          L.tooltip({
+            permanent: true,
+            direction: "top",
+            className: "",
+            offset: [0, -10],
+            opacity: 1
+          })
+          .setLatLng([lat, lon])
+          .setContent(html)
+          .addTo(mapa);
         }
       });
-    } else {
-      alert("Provincia no encontrada.");
-    }
-  }
-});
+    });
 
+  // === CARGAR CAMIONES ===
+  const CAMIONES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRo1GdeHBhvINfcrAmPKvUmgU2jAIThFYNSg_TjOd3w-MyKe3gmzxEft6wz6-CN3WSsTpEgq1TabODC/pub?gid=614991280&single=true&output=csv';
+
+  fetch(CAMIONES_CSV)
+    .then(resp => resp.text())
+    .then(text => {
+      const lines = text.trim().split('\n').map(l => l.split(','));
+      const headers = lines.shift().map(h => h.trim());
+      const camiones = lines.map(row => Object.fromEntries(headers.map((h, i) => [h, row[i]?.trim() || ""])));
+
+      const contenedor = document.getElementById("camion-container");
+      camiones.forEach(camion => {
+        const tipo = camion.TIPO ? ` (${camion.TIPO})` : '';
+        const div = document.createElement("div");
+        div.className = "camion-card";
+        div.innerHTML = `
+          <span class="camion-icon">🚛</span>
+          <span class="provincia">${camion.PROVINCIA}</span>
+          <span class="cantidad">: ${camion['Nº CAMIONES']}</span>
+        `;
+        contenedor.appendChild(div);
+      });
+    });
+
+  // Recarga cada 5 minutos
+  setTimeout(() => location.reload(), 300000);
 </script>
 </body>
 </html>
