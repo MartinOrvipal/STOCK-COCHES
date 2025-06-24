@@ -10,16 +10,18 @@
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
+      background: white;
+      color: black;
     }
 
     #map { height: 100vh; width: 100%; }
 
     .popup-content {
-      font-size: 13px;
+      font-size: 11px;
       line-height: 1.2;
-      max-width: 240px;
+      max-width: 200px;
       border-radius: 4px;
-      padding: 6px;
+      padding: 4px;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
       color: white;
     }
@@ -63,8 +65,8 @@
     .bg-valencia    { background-color: #38761d; }
     .bg-madrid      { background-color: #f1c232; }
     .bg-vigo        { background-color: #cc0000; }
-    .bg-madrid-1    { background-color: #ff6d01; }
     .bg-default     { background-color: #999999; }
+    .bg-madrid-1    { background-color: #ff6d01; }
 
     #camion-container {
       position: absolute;
@@ -103,22 +105,22 @@
       font-weight: 500;
     }
 
-    /* Media query para TV Bro o pantallas pequeñas */
-    @media (max-width: 1024px) {
+    @media screen and (max-width: 1024px) {
       .popup-content {
         font-size: 9px;
-        max-width: 160px;
-        padding: 3px;
+        padding: 2px;
       }
-
       .marca-logo img {
         width: 16px;
         height: 16px;
       }
-
-      .stock,
-      .info-marca strong {
-        font-size: 10px;
+      .camion-card {
+        font-size: 13px;
+        padding: 6px 10px;
+      }
+      .camion-icon {
+        width: 22px;
+        height: 22px;
       }
     }
   </style>
@@ -230,3 +232,4 @@
 </script>
 </body>
 </html>
+
