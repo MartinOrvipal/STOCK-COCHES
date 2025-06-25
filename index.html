@@ -173,8 +173,9 @@
       document.body.classList.add("tvbro");
     }
 
-    const center = isTVBro ? [43.5, 3.5] : [45, 3];
-    const zoom = isTVBro ? 5.5 : 5.3;
+    const center = isTVBro ? [40.5, -3.5] : [40.5, -3.5];  // Centrado en el centro de España
+    const zoom = isTVBro ? 6.2 : 6.2;  // Zoom adecuado para ver toda España sin cortar provincias
+    
     mapa.setView(center, zoom);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
