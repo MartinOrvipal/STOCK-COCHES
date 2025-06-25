@@ -26,29 +26,26 @@
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
       color: white;
     }
-
-    .marca-logo {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 4px;
-      min-width: 0;
+    
+    .marca-logo img {
+      width: 13px;
+      height: 13px;
+      margin-right: 3px;
     }
 
     .info-marca {
       display: flex;
       align-items: center;
+      flex: 1;
       min-width: 0;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      flex-grow: 1;
     }
 
     .stock {
       flex-shrink: 0;
       font-weight: bold;
-      padding-left: 4px;
     }
 
     .marca-logo img {
@@ -122,36 +119,38 @@
       font-weight: 500;
     }
 
-    @media screen and (max-width: 1024px) {
-      .tvbro .popup-content {
-        font-size: 3.5px !important;
-        max-width: 80px !important;
-        padding: 1px 1px !important;
-        line-height: 1 !important;
-      }
+    /* Versión extrema optimizada para TV Bro */
+@media screen and (max-width: 1024px) {
+  .tvbro .popup-content {
+    font-size: 3.5px !important;
+    max-width: 80px !important;
+    padding: 1px 1px !important;
+    line-height: 1 !important;
+  }
 
-      .tvbro .marca-logo img {
-        width: 6.5px !important;
-        height: 6.5px !important;
-        margin-right: 1px !important;
-      }
+  .tvbro .marca-logo img {
+    width: 6.5px !important;
+    height: 6.5px !important;
+    margin-right: 1px !important;
+  }
 
-      .tvbro .camion-card {
-        font-size: 7.5px !important;
-        padding: 2px 5px !important;
-        gap: 4px !important;
-      }
+  .tvbro .camion-card {
+    font-size: 7.5px !important;
+    padding: 2px 5px !important;
+    gap: 4px !important;
+  }
 
-      .tvbro .provincia,
-      .tvbro .cantidad {
-        font-size: 7.5px !important;
-      }
+  .tvbro .provincia,
+  .tvbro .cantidad {
+    font-size: 7.5px !important;
+  }
 
-      .tvbro .camion-icon {
-        width: 14px !important;
-        height: 14px !important;
-      }
-    }
+  .tvbro .camion-icon {
+    width: 14px !important;
+    height: 14px !important;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -169,8 +168,8 @@
     document.body.classList.add("tvbro");
   }
 
-  const center = isTVBro ? [43.5, 3.5] : [45, 3];
-  const zoom = isTVBro ? 5.5 : 5.3;
+  const center = isTVBro ? [43.5, 3.5] : [45, 3]; // Ajustado para centrar Europa desde Holanda hasta España
+  const zoom = isTVBro ? 5.5 : 5.3; // Zoom intermedio para que se vean bien los popups
   mapa.setView(center, zoom);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -204,13 +203,15 @@
           case 'holanda':       bgClass = 'bg-holanda'; break;
           case 'francia':       bgClass = 'bg-francia'; break;
           case 'creutzwald':    bgClass = 'bg-creutzwald'; break;
-          case 'valencia':      bgClass = 'bg-valencia'; break;
+          case 'valencia':      bgClass = 'bg-valencia'; break; 
           case 'madrid':        bgClass = 'bg-madrid'; break;
           case 'madriid':       bgClass = 'bg-madriid'; break;
           case 'vigo':          bgClass = 'bg-vigo'; break;
-          case 'barcelona':     bgClass = 'bg-barcelona'; break;
+          case 'default':       bgClass = 'bg-default'; break;
+          case 'barcelona':     bgClass = 'bg-barcelona'; break;  
+          // Puedes añadir más si es necesario
         }
-
+        
         const marca = fila.MARCA;
         const stock = fila.STOCK;
         const logo = fila.LOGO;
@@ -229,22 +230,11 @@
               </div>
             </div>`;
 
-          const offsetY = ciudad.includes("douai")     ? -30 :
-                          ciudad.includes("maubeuge")  ? -25 :
-                          ciudad.includes("poissy")    ? -22 :
-                          ciudad.includes("sochaux")   ? -19 :
-                          ciudad.includes("mulhouse")  ? -15 :
-                          ciudad.includes("rennes")    ? -12 :
-                          ciudad.includes("sandouville") ? -10 :
-                          ciudad.includes("batilly")   ? -8 :
-                          ciudad.includes("brugge")    ? -6 :
-                          -5;
-
           L.tooltip({
             permanent: true,
             direction: "top",
             className: "",
-            offset: [0, offsetY],
+            offset: [0, -10],
             opacity: 1
           })
           .setLatLng([lat, lon])
@@ -291,4 +281,3 @@
 </script>
 </body>
 </html>
-
