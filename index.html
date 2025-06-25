@@ -27,25 +27,28 @@
       color: white;
     }
     
-    .marca-logo img {
-      width: 13px;
-      height: 13px;
-      margin-right: 3px;
+    .marca-logo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      min-width: 0;
     }
 
     .info-marca {
       display: flex;
       align-items: center;
-      flex: 1;
       min-width: 0;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+      flex-grow: 1;
     }
 
     .stock {
       flex-shrink: 0;
       font-weight: bold;
+      padding-left: 4px;
     }
 
     .marca-logo img {
@@ -230,19 +233,28 @@
               </div>
             </div>`;
 
+          const offsetY = ciudad.includes("douai")     ? -30 :
+                          ciudad.includes("maubeuge")  ? -25 :
+                          ciudad.includes("poissy")    ? -22 :
+                          ciudad.includes("sochaux")   ? -19 :
+                          ciudad.includes("mulhouse")  ? -15 :
+                          ciudad.includes("rennes")    ? -12 :
+                          ciudad.includes("sandouville") ? -10 :
+                          ciudad.includes("batilly")   ? -8 :
+                          ciudad.includes("brugge")    ? -6 :
+                          -5; // por defecto
+
           L.tooltip({
             permanent: true,
             direction: "top",
             className: "",
-            offset: [0, -10],
+            offset: [0, offsetY],
             opacity: 1
           })
           .setLatLng([lat, lon])
           .setContent(html)
           .addTo(mapa);
-        }
-      });
-    });
+        });
 
   const CAMIONES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRo1GdeHBhvINfcrAmPKvUmgU2jAIThFYNSg_TjOd3w-MyKe3gmzxEft6wz6-CN3WSsTpEgq1TabODC/pub?gid=614991280&single=true&output=csv';
 
