@@ -36,9 +36,9 @@
     }
 
     .marca-logo img {
-      width: 16px;
-      height: 16px;
-      margin-right: 2px;
+      width: 20px;
+      height: 20px;
+      margin-right: 4px;
     }
 
     .info-marca {
@@ -56,12 +56,6 @@
       font-weight: bold;
       padding-left: 4px;
       font-size: 7.5px;
-    }
-
-    .marca-logo img {
-      width: 20px;
-      height: 20px;
-      margin-right: 4px;
     }
 
     .leaflet-tooltip {
@@ -130,164 +124,153 @@
     }
 
     /* Versión extrema optimizada para TV Bro */
-@media screen and (max-width: 1024px) {
-  .tvbro .popup-content {
-    font-size: 3.5px !important;
-    max-width: 80px !important;
-    padding: 1px 1px !important;
-    line-height: 1 !important;
-  }
+    @media screen and (max-width: 1024px) {
+      .tvbro .popup-content {
+        font-size: 3.5px !important;
+        max-width: 80px !important;
+        padding: 1px 1px !important;
+        line-height: 1 !important;
+      }
 
-  .tvbro .marca-logo img {
-    width: 6.5px !important;
-    height: 6.5px !important;
-    margin-right: 1px !important;
-  }
+      .tvbro .marca-logo img {
+        width: 6.5px !important;
+        height: 6.5px !important;
+        margin-right: 1px !important;
+      }
 
-  .tvbro .camion-card {
-    font-size: 7.5px !important;
-    padding: 2px 5px !important;
-    gap: 4px !important;
-  }
+      .tvbro .camion-card {
+        font-size: 7px !important;
+        padding: 2px 6px !important;
+        gap: 6px !important;
+      }
 
-  .tvbro .provincia,
-  .tvbro .cantidad {
-    font-size: 7.5px !important;
-  }
+      .tvbro .provincia,
+      .tvbro .cantidad {
+        font-size: 7px !important;
+      }
 
-  .tvbro .camion-icon {
-    width: 14px !important;
-    height: 14px !important;
-  }
-}
-
+      .tvbro .camion-icon {
+        width: 14px !important;
+        height: 14px !important;
+      }
+    }
   </style>
 </head>
 <body>
-<div id="map"></div>
-<div id="camion-container"></div>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script>
-  const mapa = L.map('map', {
-    zoomControl: true,
-    attributionControl: false
-  });
+  <div id="map"></div>
+  <div id="camion-container"></div>
 
-  const isTVBro = navigator.userAgent.toLowerCase().includes("tv bro");
-  if (isTVBro) {
-    document.body.classList.add("tvbro");
-  }
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const mapa = L.map('map', {
+      zoomControl: true,
+      attributionControl: false
+    });
 
-  const center = isTVBro ? [43.5, 3.5] : [45, 3]; // Ajustado para centrar Europa desde Holanda hasta España
-  const zoom = isTVBro ? 5.5 : 5.3; // Zoom intermedio para que se vean bien los popups
-  mapa.setView(center, zoom);
+    const isTVBro = navigator.userAgent.toLowerCase().includes("tv bro");
+    if (isTVBro) {
+      document.body.classList.add("tvbro");
+    }
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    detectRetina: true
-  }).addTo(mapa);
+    const center = isTVBro ? [43.5, 3.5] : [45, 3];
+    const zoom = isTVBro ? 5.5 : 5.3;
+    mapa.setView(center, zoom);
 
-  const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRo1GdeHBhvINfcrAmPKvUmgU2jAIThFYNSg_TjOd3w-MyKe3gmzxEft6wz6-CN3WSsTpEgq1TabODC/pub?gid=0&single=true&output=csv';
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      detectRetina: true
+    }).addTo(mapa);
 
-  fetch(CSV_URL)
-    .then(response => response.text())
-    .then(csvText => {
-      const rows = csvText.trim().split('\n').map(row => row.split(','));
-      const headers = rows.shift().map(h => h.trim());
-      const data = rows.map(row => Object.fromEntries(headers.map((h, i) => [h, row[i]?.trim() || ""])));
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRo1GdeHBhvINfcrAmPKvUmgU2jAIThFYNSg_TjOd3w-MyKe3gmzxEft6wz6-CN3WSsTpEgq1TabODC/pub?gid=0&single=true&output=csv';
 
-      data.forEach(fila => {
-        const ciudad = fila.CIUDAD?.toLowerCase().replace(/\s+/g, '').replace(/[^\w]/g, '');
-        let bgClass = 'bg-default';
+    fetch(CSV_URL)
+      .then(response => response.text())
+      .then(csvText => {
+        const rows = csvText.trim().split('\n').map(row => row.split(','));
+        const headers = rows.shift().map(h => h.trim());
+        const data = rows.map(row => Object.fromEntries(headers.map((h, i) => [h, row[i]?.trim() || ""])));
 
-        switch (ciudad) {
-          case 'brugge':        bgClass = 'bg-brugge'; break;
-          case 'maubeuge':      bgClass = 'bg-maubeuge'; break;
-          case 'douai':         bgClass = 'bg-douai'; break;
-          case 'batilly':       bgClass = 'bg-batilly'; break;
-          case 'sandouville':   bgClass = 'bg-sandouville'; break;
-          case 'hordain':       bgClass = 'bg-hordain'; break;
-          case 'poissy':        bgClass = 'bg-poissy'; break;
-          case 'sochaux':       bgClass = 'bg-sochaux'; break;
-          case 'mulhouse':      bgClass = 'bg-mulhouse'; break;
-          case 'rennes':        bgClass = 'bg-rennes'; break;
-          case 'holanda':       bgClass = 'bg-holanda'; break;
-          case 'francia':       bgClass = 'bg-francia'; break;
-          case 'creutzwald':    bgClass = 'bg-creutzwald'; break;
-          case 'valencia':      bgClass = 'bg-valencia'; break; 
-          case 'madrid':        bgClass = 'bg-madrid'; break;
-          case 'madriid':       bgClass = 'bg-madriid'; break;
-          case 'vigo':          bgClass = 'bg-vigo'; break;
-          case 'default':       bgClass = 'bg-default'; break;
-          case 'barcelona':     bgClass = 'bg-barcelona'; break;  
-          // Puedes añadir más si es necesario
-        }
-        
-        const marca = fila.MARCA;
-        const stock = fila.STOCK;
-        const logo = fila.LOGO;
-        const lat = parseFloat(fila.LATITUD.replace(",", "."));
-        const lon = parseFloat(fila.LONGITUD.replace(",", "."));
+        data.forEach(fila => {
+          const ciudad = fila.CIUDAD?.toLowerCase().replace(/\s+/g, '').replace(/[^\w]/g, '');
+          let bgClass = 'bg-default';
+          switch (ciudad) {
+            case 'brugge': case 'maubeuge': case 'douai': case 'batilly':
+            case 'sandouville': case 'hordain': case 'poissy': case 'sochaux':
+            case 'mulhouse': case 'rennes': case 'francia': case 'creutzwald':
+              bgClass = 'bg-' + ciudad; break;
+            case 'holanda':   bgClass = 'bg-holanda'; break;
+            case 'valencia':  bgClass = 'bg-valencia'; break;
+            case 'madrid':    bgClass = 'bg-madrid'; break;
+            case 'madriid':   bgClass = 'bg-madriid'; break;
+            case 'vigo':      bgClass = 'bg-vigo'; break;
+            case 'barcelona': bgClass = 'bg-barcelona'; break;
+          }
 
-        if (!isNaN(lat) && !isNaN(lon)) {
-          const html = `
-            <div class='popup-content ${bgClass}'>
-              <div class='marca-logo'>
-                <div class="info-marca">
-                  <img src="${logo}" alt="logo">
-                  <strong>${marca}</strong>
+          const marca = fila.MARCA;
+          const stock = fila.STOCK;
+          const logo = fila.LOGO;
+          const lat = parseFloat(fila.LATITUD.replace(",", "."));
+          const lon = parseFloat(fila.LONGITUD.replace(",", "."));
+
+          if (!isNaN(lat) && !isNaN(lon)) {
+            const html = `
+              <div class='popup-content ${bgClass}'>
+                <div class='marca-logo'>
+                  <div class="info-marca">
+                    <img src="${logo}" alt="logo">
+                    <strong>${marca}</strong>
+                  </div>
+                  <div class="stock">${stock}</div>
                 </div>
-                <div class="stock">${stock}</div>
-              </div>
-            </div>`;
-
-          L.tooltip({
-            permanent: true,
-            direction: "top",
-            className: "",
-            offset: [0, -10],
-            opacity: 1
-          })
-          .setLatLng([lat, lon])
-          .setContent(html)
-          .addTo(mapa);
-        }
+              </div>`;
+            L.tooltip({
+              permanent: true,
+              direction: "top",
+              className: "",
+              offset: [0, -10],
+              opacity: 1
+            })
+            .setLatLng([lat, lon])
+            .setContent(html)
+            .addTo(mapa);
+          }
+        });
       });
-    });
 
-  const CAMIONES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRo1GdeHBhvINfcrAmPKvUmgU2jAIThFYNSg_TjOd3w-MyKe3gmzxEft6wz6-CN3WSsTpEgq1TabODC/pub?gid=614991280&single=true&output=csv';
+    const CAMIONES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRo1GdeHBhvINfcrAmPKvUmgU2jAIThFYNSg_TjOd3w-MyKe3gmzxEft6wz6-CN3WSsTpEgq1TabODC/pub?gid=614991280&single=true&output=csv';
 
-  fetch(CAMIONES_CSV)
-    .then(resp => resp.text())
-    .then(text => {
-      const lines = text.trim().split('\n').map(l => l.split(','));
-      const headers = lines.shift().map(h => h.trim());
-      const camiones = lines.map(row => Object.fromEntries(headers.map((h, i) => [h, row[i]?.trim() || ""])));
+    fetch(CAMIONES_CSV)
+      .then(resp => resp.text())
+      .then(text => {
+        const lines = text.trim().split('\n').map(l => l.split(','));
+        const headers = lines.shift().map(h => h.trim());
+        const camiones = lines.map(row => Object.fromEntries(headers.map((h, i) => [h, row[i]?.trim() || ""])));
 
-      const contenedor = document.getElementById("camion-container");
-      camiones.forEach(camion => {
-        const provinciaOriginal = camion.PROVINCIA;
-        let nombreArchivo = provinciaOriginal.toLowerCase();
-        if (nombreArchivo.includes('vall')) {
-          nombreArchivo = 'val-pal';
-        } else {
-          nombreArchivo = nombreArchivo.replace(/[\s./]+/g, "-");
-        }
+        const contenedor = document.getElementById("camion-container");
+        camiones.forEach(camion => {
+          const provinciaOriginal = camion.PROVINCIA;
+          let nombreArchivo = provinciaOriginal.toLowerCase();
+          if (nombreArchivo.includes('vall')) {
+            nombreArchivo = 'val-pal';
+          } else {
+            nombreArchivo = nombreArchivo.replace(/[\s./]+/g, "-");
+          }
 
-        const icono = `assets/camion-${nombreArchivo}.png`;
-        const numCamiones = camion['Nº CAMIONES'];
+          const icono = `assets/camion-${nombreArchivo}.png`;
+          const numCamiones = camion['Nº CAMIONES'];
 
-        const div = document.createElement("div");
-        div.className = "camion-card";
-        div.innerHTML = `
-          <img class="camion-icon" src="${icono}" alt="Camion ${provinciaOriginal}">
-          <span class="provincia">${provinciaOriginal}</span>
-          <span class="cantidad">: ${numCamiones}</span>
-        `;
-        contenedor.appendChild(div);
+          const div = document.createElement("div");
+          div.className = "camion-card";
+          div.innerHTML = `
+            <img class="camion-icon" src="${icono}" alt="Camion ${provinciaOriginal}">
+            <span class="provincia">${provinciaOriginal}</span>
+            <span class="cantidad">: ${numCamiones}</span>
+          `;
+          contenedor.appendChild(div);
+        });
       });
-    });
 
-  setTimeout(() => location.reload(), 300000);
-</script>
+    setTimeout(() => location.reload(), 300000);
+  </script>
 </body>
 </html>
+
