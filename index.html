@@ -186,7 +186,26 @@
       const data = rows.map(row => Object.fromEntries(headers.map((h, i) => [h, row[i]?.trim() || ""])));
 
       data.forEach(fila => {
-        const provincia = fila.PROVINCIA?.toUpperCase();
+        const ciudad = fila.CIUDAD?.toLowerCase().replace(/\s+/g, '').replace(/[^\w]/g, '');
+        let bgClass = 'bg-default';
+
+        switch (ciudad) {
+          case 'brugge':        bgClass = 'bg-brugge'; break;
+          case 'maubeuge':      bgClass = 'bg-maubeuge'; break;
+          case 'douai':         bgClass = 'bg-douai'; break;
+          case 'batilly':       bgClass = 'bg-batilly'; break;
+          case 'sandouville':   bgClass = 'bg-sandouville'; break;
+          case 'hordain':       bgClass = 'bg-hordain'; break;
+          case 'poissy':        bgClass = 'bg-poissy'; break;
+          case 'sochaux':       bgClass = 'bg-sochaux'; break;
+          case 'mulhouse':      bgClass = 'bg-mulhouse'; break;
+          case 'rennes':        bgClass = 'bg-rennes'; break;
+          case 'holanda':       bgClass = 'bg-holanda'; break;
+          case 'francia':       bgClass = 'bg-francia'; break;
+          case 'creutzwald':    bgClass = 'bg-creutzwald'; break;
+          // Puedes añadir más si es necesario
+        }
+
         const marca = fila.MARCA;
         const stock = fila.STOCK;
         const logo = fila.LOGO;
