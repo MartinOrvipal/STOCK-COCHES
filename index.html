@@ -94,7 +94,6 @@
     .bg-francia     { background-color: #5800ff; }
     .bg-creutzwald  { background-color: #5800ff; }
     .bg-zaragoza    { background-color: #46bdc6; }
-    .bg-santander   { background-color: #46bdc6; }
 
     #camion-container {
       position: absolute;
@@ -248,7 +247,6 @@
             case 'vigo':      bgClass = 'bg-vigo'; break;
             case 'barcelona': bgClass = 'bg-barcelona'; break;
             case 'zaragoza':  bgClass = 'bg-zaragoza'; break;
-            case 'santander':  bgClass = 'bg-santander'; break;
           }
 
           const marca = fila.MARCA;
@@ -257,29 +255,23 @@
           const lat = parseFloat(fila.LATITUD.replace(",", "."));
           const lon = parseFloat(fila.LONGITUD.replace(",", "."));
 
-          const sinLogoCiudades = ['zaragoza', 'santander'];
-
           if (!isNaN(lat) && !isNaN(lon)) {
-            // Añadido: clase 'sin-logo' si la ciudad está en la lista
-            let claseSinLogo = sinLogoCiudades.includes(ciudad) ? ' sin-logo' : '';
+            let claseZaragoza = ciudad === 'zaragoza' ? ' sin-logo' : '';
             let html = `
               <div class='popup-content ${bgClass}'>
-                <div class='marca-logo${claseSinLogo}'>
+                <div class='marca-logo${claseZaragoza}'>
                   <div class="info-marca">`;
 
-            // Si NO está en la lista, muestra logo normal
-            if (!sinLogoCiudades.includes(ciudad)) {
+            if (ciudad !== 'zaragoza') {
               html += `<img src="${logo}" alt="logo">`;
             } else {
-              // Si está en la lista, metemos un "falso logo" invisible para que todo cuadre
               html += `<img src="#" alt="" style="opacity:0; width:1px; height:20px; margin-right:0;">`;
             }
 
-            html += `
-                    <strong>${marca}</strong></div>
-                    <div class="stock">${stock}</div>
-                  </div>
-                </div>`;
+            html += `<strong>${marca}</strong></div>
+                  <div class="stock">${stock}</div>
+                </div>
+              </div>`;
 
             L.tooltip({
               permanent: true,
@@ -292,7 +284,8 @@
             .setContent(html)
             .addTo(mapa);
           }
-          
+        });
+      });
 
     // CAMIONES Y CARGAS AGENCIA
     const CAMIONES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRo1GdeHBhvINfcrAmPKvUmgU2jAIThFYNSg_TjOd3w-MyKe3gmzxEft6wz6-CN3WSsTpEgq1TabODC/pub?gid=614991280&single=true&output=csv';
@@ -346,4 +339,3 @@
   </script>
 </body>
 </html>
-
