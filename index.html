@@ -264,17 +264,20 @@
           const lon = parseFloat(fila.LONGITUD.replace(",", "."));
 
           if (!isNaN(lat) && !isNaN(lon)) {
-            let claseZaragoza = ciudad === 'zaragoza' ? ' sin-logo' : '';
-            let html = `
-              <div class='popup-content ${bgClass}'>
-                <div class='marca-logo${claseZaragoza}'>
-                  <div class="info-marca">`;
+          const sinLogo = ciudad === 'zaragoza' || marca?.toLowerCase() === 'chinos';
 
-            if (ciudad !== 'zaragoza') {
-              html += `<img src="${logo}" alt="logo">`;
-            } else {
-              html += `<img src="#" alt="" style="opacity:0; width:1px; height:20px; margin-right:0;">`;
-            }
+          let claseSinLogo = sinLogo ? ' sin-logo' : '';
+
+          let html = `
+            <div class='popup-content ${bgClass}'>
+              <div class='marca-logo${claseSinLogo}'>
+                <div class="info-marca">`;
+
+          if (!sinLogo) {
+            html += `<img src="${logo}" alt="logo">`;
+          } else {
+            html += `<img src="#" alt="" style="opacity:0; width:1px; height:20px; margin-right:0;">`;
+          }
 
             html += `<strong>${marca}</strong></div>
                   <div class="stock">${stock}</div>
