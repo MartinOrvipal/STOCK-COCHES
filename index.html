@@ -98,6 +98,7 @@
     .bg-pamplona    { background-color: #3c78d8; }
     .bg-lisboa    { background-color: #a64d79; }
     .bg-malaga    { background-color: #e65775; }
+    .bg-psa-bcn     { background-color: #cc0000; }
 
     #camion-container {
       position: absolute;
@@ -265,6 +266,10 @@
 
           if (!isNaN(lat) && !isNaN(lon)) {
           const sinLogo = ciudad === 'zaragoza' || marca?.toLowerCase() === 'chinos';
+
+          if (marca?.toLowerCase() === 'psa bcn') {
+            bgClass = 'bg-psa-bcn';
+          }
 
           let claseSinLogo = sinLogo ? ' sin-logo' : '';
 
